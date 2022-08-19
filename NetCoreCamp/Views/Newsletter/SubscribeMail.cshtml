@@ -1,0 +1,35 @@
+﻿
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<div class="tech-btm">
+    <img src="~/CoreBlogTema/images/banner1.jpg" class="img-fluid" alt="">
+</div>
+<div class="tech-btm">
+    <h4>Mail Bültenine abone olun </h4>
+    <p>Teknoloji,yazılım ve diğer bloglar </p>
+    <form action="/Newsletter/SubscribeMail/" method="post" id="frmdata">
+        <input type="email" placeholder="Email" name="Mail" required="">
+        <input type="submit" value="Subscribe" id="subscribe">
+    </form>
+
+</div>
+<script>
+    $("#frmdata").submit(function (e) {
+        e.preventDefault();
+        $.post({
+            url: "/Newsletter/SubscribeMail",
+            data: $(this).serializeArray(),
+            success: function (data, status) {
+                swal("Tebrikler!", "Mail bültenimize abone oldunuz!", status);
+                console.log(data);
+            },
+            error: function (status) {
+                $("body").append(status.responseText);
+            }
+
+
+        })
+
+    })
+</script>

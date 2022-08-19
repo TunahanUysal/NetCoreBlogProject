@@ -1,0 +1,168 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<button type="button" id="btngetlist" class="btn btn-success">Yazarları Listele </button>
+<button type="button" id="btngetbyid" class="btn btn-outline-info">Yazarı Getir </button>
+
+
+<br />
+<br />
+<div id="writerlist">
+
+
+</div>
+<br />
+<div id="writerget">
+
+</div>
+<div>
+    <input type="text" id="writerid" placeholder="yazar id degerini giriniz" name="WriterId" class="form-control" />
+</div>
+<br />
+
+<div>
+    <form action="/Admin/Writer/AddWriter/" method="post" id="frmdata" class="form-group">
+        <input type="text" placeholder="Yazar adı" name="WriterName" id="txtwritername" class="form-control" required="">
+        <input type="text" placeholder="Yazar hakkında" name="WriterAbout" id="txtwriterabout" class="form-control" required="">
+        <input type="text" placeholder="Gorsel" name="WriterImage" id="txtwriterimage" class="form-control" required="">
+        <input type="text" placeholder="Email" name="WriterMail" id="txtwritermail" class="form-control" required="">
+        <input type="password" placeholder="Sifre" name="WriterPassword" id="txtwriterpassword" class="form-control" required="">
+        <br />
+        <input type="submit" value="Yazar Ekle" class="btn btn-outline-dark" id="subscribe">
+    </form>
+</div>
+<div>
+    <input type="text" placeholder="Silinecek Yazar Id" id="txtdeleteid" class="form-control" required="">
+    <br />
+    <button type="button" class="btn btn-warning" id="btndelete">Yazarı Sil</button>
+    <br />
+</div>
+<div>
+    <form action="/Admin/Writer/UpdateWriter/" method="post" id="frmdata2" class="form-group">
+        <input type="text" placeholder="Yazar Id" name="WriterId" id="txtidinfo" class="form-control" required="">
+        <input type="text" placeholder="Yazar adı" name="WriterName" id="txtwritername2" class="form-control" required="">
+        <input type="text" placeholder="Yazar hakkında" name="WriterAbout" id="txtwriterabout2" class="form-control" required="">
+        <input type="text" placeholder="Gorsel" name="WriterImage" id="txtwriterimage2" class="form-control" required="">
+        <input type="text" placeholder="Email" name="WriterMail" id="txtwritermail2" class="form-control" required="">
+        <input type="password" placeholder="Sifre" name="WriterPassword" id="txtwriterpassword2" class="form-control" required="">
+        <br />
+        <input type="submit" class="btn btn-outline-primary" value="Güncelle" id="btnupdate">
+    </form>
+
+</div>
+
+
+
+@section scripts
+{
+    <script>
+        $("#btngetlist").click(function () {
+            $.ajax({
+                contentType: "application/json",
+                dataType: "json",
+                type: "Get",
+                url: "/Admin/Writer/WriterList/",
+                success: function (data) {
+                    let newData = jQuery.parseJSON(data)
+                    console.log(newData);
+                    let tableHtml = "<table class='table table-bordered'> <tr><th>Yazar Id</th><th>Yazar Adı</th><th>Yazar Hakkında</th><th>Yazar Foto</th><th>Yazar Mail</th><th>Yazar Şifre</th></tr>";
+                    $.each(newData, (index, value) => {
+                        tableHtml += `<tr><td>${value.WriterId}</td> <td>${value.WriterName}</td> <td>${value.WriterAbout}</td> <td>${value.WriterImage}</td> <td>${value.WriterMail}</td> <td>${value.WriterPassword}</td></tr>`
+                    });
+                    tableHtml += "</table>";
+                    $("#writerlist").html(tableHtml);
+                }
+            });
+        });
+        $("#btngetbyid").click(x => {
+            let id = $("#writerid").val();
+            console.log(id);
+            $.ajax({
+                contentType: "application/json",
+                dataType: "json",
+                type: "Get",
+                url: "/Admin/Writer/WriterGetById/",
+                data: { writerid: id },
+                success: function (data) {
+                    let w = jQuery.parseJSON(data)
+                    console.log(w);
+                    let tablewriter = `<table class='table table-bordered'>
+                                                                    <tr>
+                                                                        <th>Yazar Id</th>
+                                                                        <th>Yazar Adı</th>
+                                                                        <th>Yazar Hakkında</th>
+                                                                        <th>Yazar Foto</th>
+                                                                        <th>Yazar Mail</th>
+                                                                        <th>Yazar Şifre</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>${w.WriterId}</td>
+                                                                        <td>${w.WriterName}</td>
+                                                                        <td>${w.WriterAbout}</td>
+                                                                        <td>${w.WriterImage}</td>
+                                                                        <td>${w.WriterMail}</td>
+                                                                        <td>${w.WriterPassword}</td>
+
+                                                                    </tr>
+                                                                </table>`
+                    $("#writerget").html(tablewriter);
+                }
+            });
+        });
+        $("#frmdata").submit(function (e) {
+            e.preventDefault();
+            let writer = {
+                WriterName: $("#txtwritername").val(),
+                WriterAbout: $("#txtwriterabout").val(),
+                WriterImage: $("#txtwriterimage").val(),
+                WriterMail: $("#txtwritermail").val(),
+                WriterPassword: $("#txtwriterpassword").val()
+            };
+            $.ajax({
+                type: "Post",
+                url: "/Admin/Writer/AddWriter/",
+                data: writer,
+                success: function (data) {
+                    let result = jQuery.parseJSON(data);
+                    alert("Ekleme işlemi başarılı:)")
+                }
+            });
+        });
+        $("#btndelete").click(x => {
+            let id = $("#txtdeleteid").val();
+            $.ajax({
+                url: "/Admin/Writer/DeleteWriter/" + id,
+                type: "post",
+                dataType: "json",
+                success: function (func) {
+                    alert("Yazar silme işlemi başarılı bir şekilde gerçekleştirildi");
+                }
+            });
+        });
+        $("#frmdata2").submit(function (e) {
+            e.preventDefault();
+            let writer = {
+                WriterId: $("#txtidinfo").val(),
+                WriterName: $("#txtwritername2").val(),
+                WriterAbout: $("#txtwriterabout2").val(),
+                WriterImage: $("#txtwriterimage2").val(),
+                WriterMail: $("#txtwritermail2").val(),
+                WriterPassword: $("#txtwriterpassword2").val()
+            };
+            $.ajax({
+                type: "Post",
+                url: "/Admin/Writer/UpdateWriter/",
+                data: writer,
+                success: function (func) {
+                    alert("Güncelleme yapıldı");
+                }
+            });
+
+        });
+
+    </script>
+
+}

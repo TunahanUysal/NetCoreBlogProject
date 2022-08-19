@@ -1,0 +1,37 @@
+﻿<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+<div class="comment-top">
+    <h4>Leave a Comment</h4>
+    <br />
+    <div class="comment-bottom">
+        <form action="/Comment/CommentAdd/" method="post" class="form-group" id="frmadd">
+            <input class="form-control" type="text" name="CommentUserName" placeholder="Kullanıcı Adınız..." required="">
+
+            <input class="form-control" type="text" name="CommentTitle" placeholder="Başlığı giriniz..." required="">
+
+            <textarea class="form-control" name="CommentContent" placeholder="Konuyu giriniz..." required=""></textarea>
+            <br />
+            <button type="submit" class="btn btn-dark submit">Submit</button>
+        </form>
+    </div>
+</div>
+<script>
+    $("#frmadd").submit(function (e) {
+        e.preventDefault();
+        $.post({
+            url: "/Comment/CommentAdd",
+            data: $(this).serializeArray(),
+            success: function (data, status) {
+                swal("Tebrikler!", "Yorumunuz başarılı bir şekilde gönderildi!", status);
+                console.log(data);
+            },
+            error: function (status) {
+                $("body").append(status.responseText);
+            }
+
+        })
+    })
+</script>

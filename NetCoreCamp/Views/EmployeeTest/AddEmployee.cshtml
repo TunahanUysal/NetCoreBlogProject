@@ -1,0 +1,15 @@
+﻿@using NetCoreCamp.Controllers
+@model Class1
+@{
+    ViewData["Title"] = "AddEmployee";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<form action="/EmployeeTest/AddEmployee/" method="post">
+    <label>Çalışan Adı Soyadı</label>
+    <input type="text" asp-for="@Model.EmployeeName" class="form-control" />
+    <br />
+    <button type="submit" class="btn btn-success">Ekle</button>
+
+</form>
+
